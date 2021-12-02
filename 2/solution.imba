@@ -1,6 +1,5 @@
-const fs = require('fs')
+import {fileToLines} from '../helpers'
 console.clear()
-
 
 const sampleInput = [
 	"forward 5"
@@ -13,29 +12,31 @@ const sampleInput = [
 
 def parseInstructionArray raw\string[]
 	raw.map do(e)
-		const amount = parseInt(e.replace(/[^\d]*/, ''))
 		const direction = e.replace(/\s\d+/, '')
+		const amount = parseInt(e.replace(/[^\d]*/, ''))
 		return {amount, direction}
 
 def calcNewPosition instructions
 	let h = 0
 	let d = 0
-	for ins in instructions
-		h += ins.amount if ins.direction === 'forward'
-		d -= ins.amount if ins.direction === 'up'
-		d += ins.amount if ins.direction === 'down'
+	let aim = 0
+
+	for ins,i in instructions
+		if ins.direction === 'forward'
+			h += ins.amount 
+			d += aim * ins.amount
+		elif ins.direction === 'up'
+			aim -= ins.amount 
+		elif ins.direction === 'down'
+			aim += ins.amount 
+	
 	return {h, d}
 
 
-def getFileLines path\string
-	const file = fs.readFileSync(__dirname + "/" + path, "utf8")
-	return file.split("\n")
-
-
-
 # calculate result
-const fileInput = getFileLines('data.txt')
-const parsed = parseInstructionArray(fileInput)
+const input = fileToLines(__dirname + '/data.txt')
+const parsed = parseInstructionArray(input)
 const position = calcNewPosition(parsed)
+
 console.log position.h * position.d
 
