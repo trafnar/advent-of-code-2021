@@ -2,19 +2,27 @@ import { prepareWorksheet, fileToString,fileToLines} from "../helpers"
 const log = prepareWorksheet()
 
 
-def calculateFuelUsage positions\number[], destination\number
+def calculateAllFuelUsages positions\number[], destination\number
 	let fuel = 0
 	for pos in positions
-		fuel += Math.abs(pos - destination)
+		fuel += calculateFuelUsage(pos, destination)
+	
 	return fuel
 
 def tryAllDestinations positions
 	let min = null
-	for crabPos in positions
-		const fuel = calculateFuelUsage(positions, crabPos)
+	let pos = null
+	for crabPos in [0...(Math.max(...positions))]
+		const fuel = calculateAllFuelUsages(positions, crabPos)
 		if min == null or fuel < min
 			min = fuel
-	return min
+			pos = crabPos
+	return {min, pos}
+
+def calculateFuelUsage from, to
+	const distance = Math.abs(from - to) + 1
+	const sum = (distance * (distance - 1)) / 2
+	return sum
 
 
 # =============================================================================
