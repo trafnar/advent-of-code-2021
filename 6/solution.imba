@@ -1,5 +1,4 @@
 import { fileToString,fileToLines} from "../helpers"
-const {createCanvas} = require('canvas')
 const log = console.log
 console.clear()
 console.log()
